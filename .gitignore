@@ -28,3 +28,7 @@ node_modules
 .lock-wscript
 
 config/secrets.sh
+
+.DS_Store
+dist/
+npm-debug.log
