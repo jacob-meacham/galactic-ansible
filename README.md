@@ -16,7 +16,7 @@ Algorithm:
 	With probability n, define a new characteristic on that node.
 	With probability n, add a new child to that node (if applicable)
 	With probability n, add new new sibling to that node (if applicable)
-	To avoid getting caught too low in the weeds, have a teleportation to a different level in the hierarchy. Prefer sitting in the middle of the hierarchy (ie galactic civilizations and planets), rather than too low.
+	To avoid getting caught too low in the weeds, have a teleportation to a different level in the hierarchy. Prefer sitting in the middle of the hierarchy (ie galactic civilizations and planets), rather than too low. Possibly could try to move towards underspecified parts of the system (ie fewer characteristics/children). Basically, build an actual tree and score it.
 
 	If someone requests a node by name (@galacticansible tell me more about Oprah IV), reset the node pointer to there and then run the algorithm to define a new characteristic, add a sibling, or add a child. If none of these is possible, do a walk up the hierarchy and do the same.
 
