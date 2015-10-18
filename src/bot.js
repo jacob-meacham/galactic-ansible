@@ -1,6 +1,6 @@
 'use strict';
 
-const config = require('./config/config');
+import config from 'config/config';
 const TwitterBot = require('node-twitterbot').TwitterBot;
 
 const bot = new TwitterBot({

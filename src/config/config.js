@@ -1,6 +1,6 @@
 'use strict';
 
-var config = {
+const config = {
   auth: {
     consumerKey: process.env.CONSUMER_KEY,
     consumerSecret: process.env.CONSUMER_SECRET,
@@ -9,4 +9,4 @@ var config = {
   }
 };
 
-module.exports = config;
+export config;
