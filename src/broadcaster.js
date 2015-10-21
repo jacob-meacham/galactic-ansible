@@ -4,7 +4,7 @@ import config from 'config/config';
 const fs = require('fs');
 const TwitterBot = require('node-twitterbot').TwitterBot;
 
-class TwitterBroadcaster {
+export class TwitterBroadcaster {
     constructor() {
         this.bot = new TwitterBot({
           'consumer_secret': config.auth.consumerSecret,
@@ -19,7 +19,7 @@ class TwitterBroadcaster {
     }
 };
 
-class FileBroadcaster {
+export class FileBroadcaster {
     constructor(file) {
         this.file = file
     }
@@ -33,7 +33,7 @@ class FileBroadcaster {
     }
 };
 
-class ConsoleBroadcaster {
+export class ConsoleBroadcaster {
     broadcast(message) {
         console.log(message);
     }
