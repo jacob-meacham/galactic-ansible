@@ -1,6 +1,6 @@
 'use strict'
 
-import config from 'config/config';
+import config from './config/config';
 const fs = require('fs');
 const TwitterBot = require('node-twitterbot').TwitterBot;
 
