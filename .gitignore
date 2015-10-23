@@ -1,4 +1,4 @@
 node_modules/
-out/
+generated/
 config/secrets.sh
 .DS_Store
