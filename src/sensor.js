@@ -1,7 +1,4 @@
 'use strict'
-
-const weighted = require('weighted');
-
 // TODO: Make a class, move
 /* node = {
     characteristics: [],
@@ -12,67 +9,122 @@ const weighted = require('weighted');
     description: string
  }*/
 
+ // TODO: Description and allowed under-type generators should be saved in the object itself
+ // TODO: Characteristics also need a type, so that we don't end up redefining it.
+
+// TODO: Characteristic types:
+// Neighbor
+// thing (number of)
+// Most prominent feature (link to a child?)
+
 function choose(arr) {
     return arr[Math.floor(Math.random()*arr.length)];
 }
 
-function generateGalaxyDescription() {
-    const galaxyName = () => {
-        const classificationName = () => {
-            let name = '';
-            do {
-                name += Math.random().toString(36).substr(0,5);
-            } while (Math.random() > 0.25);
+function generateClassificationName() {
+  let name = '';
+  do {
+    name += Math.random().toString(36).substr(0, 5);
+  } while (Math.random() > 0.25);
+  
+  return name;
+}
 
-            return name;
-        };
-        const standardName = () => {
-            return choose(['Andromeda', 'Big Daddy', 'Tencent', 'Fubar', 'Johnny', 'Sixty-O', 'Dfjsktisd', 'Lemonade']);
-        }
-        
-        return choose([classificationName, standardName])()
+class AnsibleAtom {
+  constructor() {
+    this.parent = null;
+    this.children = [];
+    this.maxChildren = 0;
+    this.name = '';
+    this.description = '';
+    this.characteristics = [];
+  }
+
+  _generateCharacteristic() {
+    return '';
+  }
+
+  _generateNewChild() {
+    return null;
+  }
+
+  discoverNewChild() {
+    const child = this._generateNewChild();
+    if (!child) {
+        return null;
+    }
+
+    child.parent = this;
+    this.children.push(child);
+    return child;
+  }
+
+  discoverNewCharacteristic() {
+    const characteristic = this._generateCharacteristic();
+    this.characteristics.push(characteristic);
+    return characteristic;
+  }
+}
+
+class BlackHole extends AnsibleAtom {
+  constructor() {
+    super();
+    this.maxChildren = 10000;
+    this.name = generateClassificationName();
+    const years = Math.random() * 1000;
+    const size = Math.random() * 1000;
+    this.description = `This black hole will last for ${years} years, and is ${size} km large.`;
+  }
+
+  _generateCharacteristic() {
+    return choose(['A', 'B', 'C', 'D']) + ' ' + choose(['1', '2', '3', '4']);
+  }
+}
+
+class SolarSystem extends AnsibleAtom {
+  constructor() {
+    super();
+    this.maxChildren = 10000;
+    this.name = generateClassificationName();
+    const years = Math.random() * 1000;
+    const size = Math.random() * 1000;
+    this.description = 'This solar system is \'uge!';
+  }
+
+  _generateCharacteristic() {
+    return choose(['A', 'B', 'C', 'D']) + ' ' + choose(['1', '2', '3', '4']);
+  }
+}
+
+class Galaxy extends AnsibleAtom {
+  constructor() {
+    super();
+    this.maxChildren = 10000;
+    this.name = Galaxy._generateName();
+    this.description = Galaxy._generateDescription();
+  }
+
+  _generateCharacteristic() {
+    return choose(['Its nearest neighbor is ' + choose([Galaxy._generateName() + ' galaxy', 'a black hole', 'a dark matter reactor', 'the pocket universe ' + Galaxy._generateName()]), 'Its prominent feature is ' + choose(['a black hole', 'a dyson sphere', 'intelligent life', 'a historic event']), 'It has ' + Math.random() + choose([' stars', ' planets', ' fast food joints'])]);
+  }
+
+  _generateNewChild() {
+    const childType = choose([BlackHole, SolarSystem]);
+    return new childType();
+  }
+
+  static _generateName() {
+    const standardName = function() {
+      return choose(['Andromeda', 'Big Daddy', 'Tencent', 'Fubar', 'Johnny', 'Sixty-O', 'Dfjsktisd', 'Lemonade']);
     };
 
-    return galaxyName();
-}
+    return choose([generateClassificationName, standardName])();
+  }
 
-function generateBlackHoleDescription() {
-    return 'Black Hole ' + Math.floor(Math.random() * 1000);
-}
-
-function generateSolarSystemDescription() {
-    return 'Solar System ' + Math.floor(Math.random() * 1000);
-}
-
-function galaxyCharacteristicGenerator() {
-    const galaxyId = () => {
-        var type = choose(['huge', 'giant', 'colossal', 'average', 'medium', 'small', 'tiny', 'miniscule']) + ' ' + 
-            choose(['grey', 'blue', 'green', 'rainbow', 'puke-colored', 'magenta', 'black as night']) + ' ' +
-            choose(['elliptical', 'spherical', 'spiral', 'S0', 'irregular']);
-        return `It is a ${type} galaxy.`;
-    }
-
-    const galaxyCharacteristic = () => {
-        return choose(
-            ['Its nearest neighbor is ' + choose([generateGalaxyDescription() + ' galaxy', 'a black hole', 'a dark matter reactor', 'the pocket universe ' + generateGalaxyDescription()]),
-            'Its prominent feature is ' + choose(['a black hole', 'a dyson sphere', 'intelligent life', 'a historic event']),
-            'It has ' + Math.random() + choose([' stars', ' planets', ' fast food joints'])
-            ]);
-    }
-    return choose(
-        [
-            galaxyId,
-            galaxyCharacteristic
-        ]
-    )();
-}
-
-function blackHoleCharacteristicGenerator() {
-    return 'Black holes are really something, huh?';
-}
-
-function solarSystemCharacteristicGenerator() {
-    return 'Solar systems are really something, huh?';
+  static _generateDescription() {
+    const type = choose(['huge', 'giant', 'colossal', 'average', 'medium', 'small', 'tiny', 'miniscule']) + ' ' + choose(['grey', 'blue', 'green', 'rainbow', 'puke-colored', 'magenta', 'black as night']) + ' ' + choose(['elliptical', 'spherical', 'spiral', 'S0', 'irregular']);
+    return (`It is a ${type} galaxy.`);
+  }
 }
 
 export class RandomSensor {
@@ -83,30 +135,26 @@ export class RandomSensor {
     retrieveData() {
         if (!this.currentNode) {
             // Let's start a node!
-            this.currentNode = this.generateGalaxy();
-            return 'Let\'s talk about ' + this.currentNode.description;
+            this.currentNode = new Galaxy();
+            return `Lets talk about ${this.currentNode.name}. ${this.currentNode.description}`;
         }
 
         const newNode = this.walk();
         if (this.currentNode != newNode) {
             this.currentNode = newNode;
-            return 'Let\'s talk about ' + newNode.description;
+            return `Lets talk about ${newNode.name}. ${newNode.description}`;
         }
 
         // We now have a current node. Decide if we want to print a characteristic about this node, or make a new child.
         if (Math.random() < 0.25 && this.currentNode.children < this.currentNode.maxChildren) {
             // Make a new child:
-            const childNode = this.generateNode(this.currentNode.type);
-            childNode.parent = this.currentNode;
-            this.currentNode.children.push(childNode);
+            const childNode = this.currentNode.discoverNewChild();
             this.currentNode = childNode;
-            return 'It has a child ' + childNode.description;
+            return `It has a child ${childNode.name}. ${childNode.description}`;
         } else if (Math.random() < 0.2) {
-            return 'We\'re talking about ' + newNode.description;
+            return `We are talking about ${newNode.name}`;
         } else {
-            const characteristic = this.generateCharacteristic(this.currentNode.type);
-            this.currentNode.characteristics.push(characteristic);
-            return characteristic;
+            return this.currentNode.discoverNewCharacteristic();
         }
     }
 
@@ -123,59 +171,6 @@ export class RandomSensor {
         }
 
         return newNode;
-    }
-
-    generateCharacteristic(nodeType) {
-        if (nodeType === 'galaxy') {
-            return galaxyCharacteristicGenerator();
-        } else if (nodeType === 'black-hole') {
-            return blackHoleCharacteristicGenerator();
-        } else if (nodeType == 'solar-system') {
-            return solarSystemCharacteristicGenerator();
-        }
-    }
-
-    generateGalaxy() {
-        return {
-            parent: null,
-            children: [],
-            characteristics: [],
-            description: generateGalaxyDescription(),
-            maxChildren: 100,
-            type: 'galaxy'
-        };
-    }
-
-    generateBlackHole() {
-        return {
-            parent: null,
-            children: [],
-            characteristics: [],
-            description: generateBlackHoleDescription(),
-            maxChildren: 0,
-            type: 'black-hole'
-        }
-    }
-
-    generateSolarSystem() {
-        return {
-            parent: null,
-            children: [],
-            characteristics: [],
-            description: generateSolarSystemDescription(),
-            maxChildren: 0,
-            type: 'solar-system'
-        }
-    }
-
-    generateNode(nodeType) {
-        let types = null;
-        if (nodeType === 'galaxy') {
-            types = [this.generateSolarSystem, this.generateBlackHole];
-        } else {
-            types = [this.generateGalaxy, this.generateBlackHole, this.generateSolarSystem];
-        }
-        return choose(types)();
     }
 }
 
