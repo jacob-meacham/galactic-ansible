@@ -1,5 +1,4 @@
 'use strict'
-// TODO: Make a class, move
 /* node = {
     characteristics: [],
     type: string,
@@ -9,7 +8,6 @@
     description: string
  }*/
 
- // TODO: Description and allowed under-type generators should be saved in the object itself
  // TODO: Characteristics also need a type, so that we don't end up redefining it.
 
 // TODO: Characteristic types:
@@ -17,8 +15,14 @@
 // thing (number of)
 // Most prominent feature (link to a child?)
 
+// TODO: Make walk more sticky, or make it go down more often.
+
 function choose(arr) {
-    return arr[Math.floor(Math.random()*arr.length)];
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function randRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function generateClassificationName() {
@@ -35,6 +39,7 @@ class AnsibleAtom {
     this.parent = null;
     this.children = [];
     this.maxChildren = 0;
+    this.maxCharacteristics = 0;
     this.name = '';
     this.description = '';
     this.characteristics = [];
@@ -64,12 +69,17 @@ class AnsibleAtom {
     this.characteristics.push(characteristic);
     return characteristic;
   }
+
+  isTerminal() {
+    return this.maxChildren === 0 && this.maxCharacteristics === 0;
+  }
 }
 
 class BlackHole extends AnsibleAtom {
   constructor() {
     super();
-    this.maxChildren = 10000;
+    this.maxChildren = 0;
+    this.maxCharacteristics = 10000;
     this.name = generateClassificationName();
     const years = Math.random() * 1000;
     const size = Math.random() * 1000;
@@ -84,7 +94,8 @@ class BlackHole extends AnsibleAtom {
 class SolarSystem extends AnsibleAtom {
   constructor() {
     super();
-    this.maxChildren = 10000;
+    this.maxChildren = 0;
+    this.maxCharacteristics = 10000;
     this.name = generateClassificationName();
     const years = Math.random() * 1000;
     const size = Math.random() * 1000;
@@ -96,10 +107,54 @@ class SolarSystem extends AnsibleAtom {
   }
 }
 
+// TODO: How should this relate to, eg creators of the monument? Should it be done this way
+// or should it be done differently? How do characteristics work?
+class Monument extends AnsibleAtom {
+  constructor() {
+    super();
+    this.name = Monument._generateName();
+    this.maxCharacteristics = 0;
+    this.maxChildren = 0;
+    this.description = Monument._generateDescription();
+  }
+
+  static _generateName() {
+    return choose(['Grafla', 'Dkejifs', 'dsafje', 'Gef a ', 'The Space Needle', 'SDjkle', 'SDFe']);
+  }
+
+  static _generateDescription() {
+    // TODO: don't do a choose, need to pick 2 from the range.
+    var physical = () => {
+      return choose(['ancient', 'old', 'crumbling', 'historic', 'royal', 'imperial', 'sunken', 'twisted', 'lucky', 'magnificient', 'glorious', 'shining', 'tall', 'cracked', 'great', 'big', 'huge', 'giant', 'grand', 'gigantic', 'colossal', 'tremendous', 'gargantuan', 'moss-covered', 'haloed', 'gleaming']);
+    }
+
+    let description = 'This monument is a ';
+    const numPhysical = randRange(1, 2);
+    for (var i = 0; i < numPhysical; i++) {
+      description += physical();
+      if (i < numPhysical-1) {
+        description += ', ';
+      }
+    }
+
+    description += ' ';
+    if (Math.random() < 0.9) {
+      description += choose(['stone', 'gold', 'copper', 'bronze', 'silver', 'white', 'black', 'green', 'gray', 'obsidian', 'wooden']);
+      description += ' ';
+    }
+
+    // TODO: Fix, as these are not unique.
+    description += choose(['tower', choose('', 'smiling', 'proud', 'wise', 'crying', 'singing', 'laughing') + choose('statue', 'statues', 'colossus'), 'bridge', 'towers', 'spire', 'spires', 'cathedral', 'church', 'masoleum', 'maze', 'castle', 'fort', 'keep']);
+
+    return description;
+  }
+}
+
 class Galaxy extends AnsibleAtom {
   constructor() {
     super();
     this.maxChildren = 10000;
+    this.maxCharacteristics = 10000;
     this.name = Galaxy._generateName();
     this.description = Galaxy._generateDescription();
   }
@@ -109,8 +164,7 @@ class Galaxy extends AnsibleAtom {
   }
 
   _generateNewChild() {
-    const childType = choose([BlackHole, SolarSystem]);
-    return new childType();
+    const childType = choose([BlackHole, SolarSystem, Monument]);
   }
 
   static _generateName() {
@@ -149,7 +203,9 @@ export class RandomSensor {
         if (Math.random() < 0.25 && this.currentNode.children < this.currentNode.maxChildren) {
             // Make a new child:
             const childNode = this.currentNode.discoverNewChild();
-            this.currentNode = childNode;
+            if (!childNode.isTerminal()) {
+              this.currentNode = childNode;
+            }
             return `It has a child ${childNode.name}. ${childNode.description}`;
         } else if (Math.random() < 0.2) {
             return `We are talking about ${newNode.name}`;
