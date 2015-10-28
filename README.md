@@ -111,8 +111,6 @@ The <name> alien race is
 		<asexual>
 		<n-body-sexual>
 		<n-morphic>
-	<thought-patterns>
-		<typical-thought>
 	<sports/games>
 		<name>
 		<number of players>

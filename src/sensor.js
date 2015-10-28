@@ -16,6 +16,9 @@
 // Most prominent feature (link to a child?)
 
 // TODO: Make walk more sticky, or make it go down more often.
+// TODO: Can specify what type and how many of each child you have.
+// TODO: Similarly, can specify what type and how many of each characteristic you have
+// TODO: Specify siblings?
 
 function choose(arr) {
   return arr[Math.floor(Math.random()*arr.length)];
@@ -25,13 +28,15 @@ function randRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function generateClassificationName() {
+function generateClassificationName(len) {
+  len = len || randRange(2, 8);
   let name = '';
-  do {
-    name += Math.random().toString(36).substr(0, 5);
-  } while (Math.random() > 0.25);
-  
-  return name;
+  while (name.length < len)
+  {
+    const add = Math.random().toString(36).slice(2);
+    name += add.slice(0, Math.min(add.length, (len - name.length)));
+  }
+  return name.toUpperCase();
 }
 
 class AnsibleAtom {
@@ -160,11 +165,12 @@ class Galaxy extends AnsibleAtom {
   }
 
   _generateCharacteristic() {
-    return choose(['Its nearest neighbor is ' + choose([Galaxy._generateName() + ' galaxy', 'a black hole', 'a dark matter reactor', 'the pocket universe ' + Galaxy._generateName()]), 'Its prominent feature is ' + choose(['a black hole', 'a dyson sphere', 'intelligent life', 'a historic event']), 'It has ' + Math.random() + choose([' stars', ' planets', ' fast food joints'])]);
+    return choose(['Its nearest neighbor is ' + choose([Galaxy._generateName() + ' galaxy', 'a black hole', 'a dark matter reactor', 'the pocket universe ' + Galaxy._generateName()]), 'Its prominent feature is ' + choose(['a black hole', 'a dyson sphere', 'intelligent life', 'a historic event']), 'It has ' + Math.random() * 1000 + choose([' stars', ' planets', ' fast food joints'])]);
   }
 
   _generateNewChild() {
     const childType = choose([BlackHole, SolarSystem, Monument]);
+    return childType();
   }
 
   static _generateName() {
