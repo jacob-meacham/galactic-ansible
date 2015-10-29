@@ -207,7 +207,6 @@ export class RandomSensor {
     }
     
     retrieveData() {
-        return dateGenerator();
         if (!this.currentNode) {
             // Let's start a node!
             this.currentNode = new Galaxy();
