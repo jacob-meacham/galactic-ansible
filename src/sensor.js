@@ -20,6 +20,20 @@
 // TODO: Similarly, can specify what type and how many of each characteristic you have
 // TODO: Specify siblings?
 
+function randomLetter() {
+  return choose(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']);
+}
+
+function dateGenerator() {
+  let newDate = randRange(1, 30000) + ' ' + randomLetter().toUpperCase() + randomLetter().toUpperCase();
+
+  if (Math.random() < 0.25) {
+    newDate += randomLetter().toUpperCase();
+  }
+
+  return newDate;
+}
+
 function choose(arr) {
   return arr[Math.floor(Math.random()*arr.length)];
 }
@@ -193,6 +207,7 @@ export class RandomSensor {
     }
     
     retrieveData() {
+        return dateGenerator();
         if (!this.currentNode) {
             // Let's start a node!
             this.currentNode = new Galaxy();
