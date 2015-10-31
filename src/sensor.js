@@ -20,9 +20,8 @@
 // TODO: Similarly, can specify what type and how many of each characteristic you have
 // TODO: Specify siblings?
 
-function randomLetter() {
-  return choose(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']);
-}
+import {randRange, randomLetter, choose} from './random'
+
 
 function dateGenerator() {
   let newDate = randRange(1, 30000) + ' ' + randomLetter().toUpperCase() + randomLetter().toUpperCase();
@@ -32,14 +31,6 @@ function dateGenerator() {
   }
 
   return newDate;
-}
-
-function choose(arr) {
-  return arr[Math.floor(Math.random()*arr.length)];
-}
-
-function randRange(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function generateClassificationName(len) {
