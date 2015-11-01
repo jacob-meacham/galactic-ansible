@@ -175,7 +175,7 @@ class Galaxy extends AnsibleAtom {
 
   _generateNewChild() {
     const childType = choose([BlackHole, SolarSystem, Monument]);
-    return childType();
+    return new childType();
   }
 
   static _generateName() {
