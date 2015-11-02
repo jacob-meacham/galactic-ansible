@@ -224,7 +224,6 @@ export class RandomSensor {
     }
     
     retrieveData() {
-      return generateAtmosphere();
         if (!this.currentNode) {
             // Let's start a node!
             this.currentNode = new Galaxy();
