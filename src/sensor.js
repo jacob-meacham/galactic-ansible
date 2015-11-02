@@ -33,6 +33,32 @@ function dateGenerator() {
   return newDate;
 }
 
+function addIf(nodule, chance) {
+  if (Math.random() <= chance) {
+    return nodule;
+  }
+
+  return '';
+}
+
+function generateAtmosphere() {
+  const atmosphereAdjective = function() {
+    return choose(['wispy', 'noxious', 'fumey', 'sparse', 'heavy', 'dense', 'light', 'overbearing']);
+  }
+
+  const atmopshereElement = function() {
+    return choose(['ammonia', 'oxygen', 'nitrogen', 'helium', 'hydrogen', 'dark matter']);
+  }
+
+  const description = addIf(choose(['purple', 'grey', 'white', 'blue', 'yellow', 'orange', 'tan', 'pink']) + ', ', 0.5) + atmosphereAdjective() + addIf(', and ' + atmosphereAdjective(), 0.25);
+  if (Math.random() < 0.25) {
+    return 'There is no atmopshere to speak of';
+  }
+
+  return choose(['The atmopshere is one of ' + atmopshereElement() + ' and is ' + description, 'The atmoshpere is full of ' + description + ' clouds, made of ' + atmopshereElement()]);
+
+}
+
 function generateClassificationName(len) {
   len = len || randRange(2, 8);
   let name = '';
@@ -198,6 +224,7 @@ export class RandomSensor {
     }
     
     retrieveData() {
+      return generateAtmosphere();
         if (!this.currentNode) {
             // Let's start a node!
             this.currentNode = new Galaxy();
