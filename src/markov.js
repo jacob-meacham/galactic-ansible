@@ -2,65 +2,63 @@
 
 import {choose} from './random'
 
+function generateNgrams(corpus, n) {
+    function generateNgram(word, n) {
+        if (n == 0 || n > word.length) {
+            return [];
+        }
+
+        let ret = [];
+        for (let i = 0; i < word.length - n; i++) {
+            ret.push(word.slice(i, i+n));
+        }
+        return ret;
+    }
+
+    return corpus.reduce((acc, cur) => acc.concat(generateNgram(cur, n+1)), []);
+}
+
 // Markov chain generator that generates per character, rather than per word.
 export class MarkovWordGenerator {
     constructor(corpus, order) {
-        // TODO: Change to Map
-        this.db = { }
-        this.generateDb(corpus.split(' '), order);
+        this.db = new Map();
+        this.generateDb(corpus.toLowerCase().split(' '), order);
     }
 
     generateDb(corpus, order) {
-        // TODO: build n-grams as a separate step instead
         let totalCount = 0;
-        for (let j = 0; j < corpus.length; j++) {
-            const word = corpus[j].toLowerCase();
-            // Slice each word into order pieces
-            for (let i = 0; i < word.length; i++) {
-                let nthong = word.slice(i, i+order);
-                if (nthong.length < order) {
-                    break;
-                }
-                totalCount++;
-                // TODO: Weird that the top level nodes are different? Could homogenize the tree and make it deeper?
-                let record = this.db[nthong];
-                if (!record) {
-                    this.db[nthong] = {
-                        count: 0,
-                        frequency: 1,
-                        next: {},
-                        letters: nthong
-                    }
+        const ngrams = generateNgrams(corpus, order);
+        for (const ngram of ngrams) {
+            const state = ngram.slice(0, order);
+            const nextState = ngram.slice(order);
 
-                    record = this.db[nthong];
-                }
-                record.count++;
+            totalCount++;
+            // TODO: Weird that the top level nodes are different? Could homogenize the tree and make it deeper?
+            if (!this.db.has(state)) {
+                this.db.set(state, {
+                    count: 0,
+                    frequency: 1,
+                    states: new Map(),
+                })
+            }
 
-                let next = '';
-                if (i + order < word.length) {
-                    next = word[i+order]
-                } else {
-                    continue;
-                }
+            let record = this.db.get(state);
+            record.count++;
 
-                if (record.next[next]) {
-                    record.next[next].count++;
-                } else {
-                    record.next[next] = {
-                        count: 1,
-                        frequency: 1,
-                        letter: next // TODO: Don't need
-                    }
-                }
+            if (record.states.has(nextState)) {
+                record.states.get(nextState).count++;
+            } else {
+                record.states.set(nextState, {
+                    count: 1,
+                    frequency: 1,
+                });
             }
         }
 
         // Normalize the frequency
-        for (let key of Object.keys(this.db)) {
-            let node = this.db[key];
+        for (const [, node] of this.db) {
             node.frequency = node.count / totalCount;
-            for (let childKey of Object.keys(node.next)) {
-                let child = node.next[childKey];
+            for (const [, child] of node.states) {
                 child.frequency = child.count / node.count;
             }
         }
@@ -70,37 +68,36 @@ export class MarkovWordGenerator {
         const chooseByFrequency = function(map) {
             const target = Math.random();
             let sum = 0;
-            for (let key of Object.keys(map)) {
-                const node = map[key];
+            for (const [key, node] of map) {
                 sum += node.frequency;
                 if (sum >= target) {
-                    return node;
+                    return [key, node];
                 }
             }
 
             return null;
         }
+        // TODO: Return array instead of string?
         let val = '';
         // TODO: Use a picker library.
-        let cur = chooseByFrequency(this.db);
+        let [key, cur] = chooseByFrequency(this.db);
 
-        val += cur.letters;
-        let next = cur.letters;
+        val += key;
+        let nextState = key;
         while (val.length < limit) {
-            const nextState = chooseByFrequency(cur.next);
-            if (!nextState) {
+            if (!cur) {
                 return val;
             }
-            //console.log(nextLetter);
-            const nextLetter = nextState.letter;
-            val += nextLetter;
-            next = next.substring(1) + nextLetter;
-            //console.log(val);
-            if (!this.db[next]) {
+            
+            const [nextLetter, ] = chooseByFrequency(cur.states);
+            if (!nextLetter) {
                 return val;
             }
 
-            cur = this.db[next];
+            val += nextLetter;
+            nextState = nextState.slice(1) + nextLetter;
+            
+            cur = this.db.get(nextState);
         }
 
         return val;

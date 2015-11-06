@@ -180,7 +180,7 @@ class Monument extends AnsibleAtom {
   }
 
   static _generateName() {
-    return choose(['Grafla', 'Dkejifs', 'dsafje', 'Gef a ', 'The Space Needle', 'SDjkle', 'SDFe']);
+    return generateName();
   }
 
   static _generateDescription() {
@@ -221,7 +221,7 @@ class Galaxy extends AnsibleAtom {
   }
 
   _generateCharacteristic() {
-    return choose(['Its nearest neighbor is ' + choose([Galaxy._generateName() + ' galaxy', 'a black hole', 'a dark matter reactor', 'the pocket universe ' + Galaxy._generateName()]), 'Its prominent feature is ' + choose(['a black hole', 'a dyson sphere', 'intelligent life', 'a historic event']), 'It has ' + Math.random() * 1000 + choose([' stars', ' planets', ' fast food joints'])]);
+    return choose(['Its nearest neighbor is ' + choose([Galaxy._generateName() + ' galaxy', 'a black hole', 'a dark matter reactor', 'the pocket universe ' + Galaxy._generateName()]), 'Its prominent feature is ' + choose(['a black hole', 'a dyson sphere', 'intelligent life', 'a historic event']), 'It has ' + randRange(1, 100) * 100000 + choose([' stars', ' planets', ' fast food joints'])]);
   }
 
   _generateNewChild() {
