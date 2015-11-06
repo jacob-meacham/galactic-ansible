@@ -60,7 +60,30 @@ function generateAtmosphere() {
 
 }
 
+
+// TODO: Short name, with something like
+// "X is a galaxy, known only as The Yll"
+
+let nameGenerator = new MarkovWordGenerator('Sun Mercury Venus Earth Mars Jupiter Saturn Uranus Neptune Pluto Ceres Pallas Vesta Hygiea Interamnia Europa Davida Sylvia Cybele Eunomia Juno Euphrosyne Hektor Thisbe Bamberga Patientia Herculina Doris Ursula Camilla Eugenia Iris Amphitrite Mercury Venus Earth Mars Asteroid Belt Jupiter Saturn Neptune Pluto Moon Terra Luna \
+Adrastea Ganymede Callisto Europa Himalia Amalthea Thebe Elara Metis Pasiphae Carme \
+Sinope Lysithea Ananke Leda Themisto Callirrhoe Praxidike Megaclite Locaste Taygete \
+Kalyke Autonoe Harpalyke Titan Rhea Iapetus Dione Tethys Enceladus Mimas Hyperion \
+Phoebe Janus Epimetheus Prometheus Pandora Titania Oberon Umbriel Ariel Miranda \
+Sycorax Puck Portia Juliet Caliban Belinda Cressida Triton Proteus Nereid Larissa \
+Galatea Despina Thalassa Charon', 2);
+
+function generateName() {
+  let name = '';
+  while (name.length < 4) {
+    name = nameGenerator.fill(randRange(5,10));
+  }
+
+  return name[0].toUpperCase() + name.slice(1);
+}
+
 function generateClassificationName(len) {
+  return generateName();
+  /*
   len = len || randRange(2, 8);
   let name = '';
   while (name.length < len)
@@ -69,6 +92,7 @@ function generateClassificationName(len) {
     name += add.slice(0, Math.min(add.length, (len - name.length)));
   }
   return name.toUpperCase();
+  */
 }
 
 class AnsibleAtom {
@@ -124,7 +148,7 @@ class BlackHole extends AnsibleAtom {
   }
 
   _generateCharacteristic() {
-    return choose(['A', 'B', 'C', 'D']) + ' ' + choose(['1', '2', '3', '4']);
+    return choose([generateName(), generateAtmosphere()]);
   }
 }
 
@@ -140,7 +164,7 @@ class SolarSystem extends AnsibleAtom {
   }
 
   _generateCharacteristic() {
-    return choose(['A', 'B', 'C', 'D']) + ' ' + choose(['1', '2', '3', '4']);
+    return choose([generateName(), generateAtmosphere()]);
   }
 }
 
@@ -207,7 +231,7 @@ class Galaxy extends AnsibleAtom {
 
   static _generateName() {
     const standardName = function() {
-      return choose(['Andromeda', 'Big Daddy', 'Tencent', 'Fubar', 'Johnny', 'Sixty-O', 'Dfjsktisd', 'Lemonade']);
+      return generateName();
     };
 
     return choose([generateClassificationName, standardName])();
@@ -222,18 +246,6 @@ class Galaxy extends AnsibleAtom {
 export class RandomSensor {
     constructor() {
         this.currentNode = null;
-        this.testGenerator = new MarkovWordGenerator('Mercury Venus Earth Mars Asteroid Belt Jupiter Saturn Neptune Pluto Moon Terra Luna \
-Adrastea Ganymede Callisto Europa Himalia Amalthea Thebe Elara Metis Pasiphae Carme \
-Sinope Lysithea Ananke Leda Themisto Callirrhoe Praxidike Megaclite Locaste Taygete \
-Kalyke Autonoe Harpalyke Titan Rhea Iapetus Dione Tethys Enceladus Mimas Hyperion \
-Phoebe Janus Epimetheus Prometheus Pandora Titania Oberon Umbriel Ariel Miranda \
-Sycorax Puck Portia Juliet Caliban Belinda Cressida Triton Proteus Nereid Larissa \
-Galatea Despina Thalassa Charon', 4);
-
-        for (let i = 0; i < 20; i++) {
-          //console.log(this.testGenerator.fill(randRange(5,10)));
-          this.testGenerator.fill(10);
-        }
     }
     
     retrieveData() {
