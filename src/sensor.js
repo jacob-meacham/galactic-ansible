@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 /* node = {
     characteristics: [],
     type: string,
@@ -20,19 +20,18 @@
 // TODO: Similarly, can specify what type and how many of each characteristic you have
 // TODO: Specify siblings?
 
-import {randRange, randomLetter, choose} from './random'
-import {MarkovWordGenerator} from './markov'
+import {randRange, choose} from './random';
+import {MarkovWordGenerator} from './markov';
 
+// function dateGenerator() {
+//   let newDate = randRange(1, 30000) + ' ' + randomLetter().toUpperCase() + randomLetter().toUpperCase();
 
-function dateGenerator() {
-  let newDate = randRange(1, 30000) + ' ' + randomLetter().toUpperCase() + randomLetter().toUpperCase();
+//   if (Math.random() < 0.25) {
+//     newDate += randomLetter().toUpperCase();
+//   }
 
-  if (Math.random() < 0.25) {
-    newDate += randomLetter().toUpperCase();
-  }
-
-  return newDate;
-}
+//   return newDate;
+// }
 
 function addIf(nodule, chance) {
   if (Math.random() <= chance) {
@@ -43,13 +42,13 @@ function addIf(nodule, chance) {
 }
 
 function generateAtmosphere() {
-  const atmosphereAdjective = function() {
+  const atmosphereAdjective = () => {
     return choose(['wispy', 'noxious', 'fumey', 'sparse', 'heavy', 'dense', 'light', 'overbearing']);
-  }
+  };
 
-  const atmopshereElement = function() {
+  const atmopshereElement = () => {
     return choose(['ammonia', 'oxygen', 'nitrogen', 'helium', 'hydrogen', 'dark matter']);
-  }
+  };
 
   const description = addIf(choose(['purple', 'grey', 'white', 'blue', 'yellow', 'orange', 'tan', 'pink']) + ', ', 0.5) + atmosphereAdjective() + addIf(', and ' + atmosphereAdjective(), 0.25);
   if (Math.random() < 0.25) {
@@ -57,14 +56,11 @@ function generateAtmosphere() {
   }
 
   return choose(['The atmopshere is one of ' + atmopshereElement() + ' and is ' + description, 'The atmoshpere is full of ' + description + ' clouds, made of ' + atmopshereElement()]);
-
 }
-
 
 // TODO: Short name, with something like
 // "X is a galaxy, known only as The Yll"
-
-let nameGenerator = new MarkovWordGenerator('Sun Mercury Venus Earth Mars Jupiter Saturn Uranus Neptune Pluto Ceres Pallas Vesta Hygiea Interamnia Europa Davida Sylvia Cybele Eunomia Juno Euphrosyne Hektor Thisbe Bamberga Patientia Herculina Doris Ursula Camilla Eugenia Iris Amphitrite Mercury Venus Earth Mars Asteroid Belt Jupiter Saturn Neptune Pluto Moon Terra Luna \
+const nameGenerator = new MarkovWordGenerator('Sun Mercury Venus Earth Mars Jupiter Saturn Uranus Neptune Pluto Ceres Pallas Vesta Hygiea Interamnia Europa Davida Sylvia Cybele Eunomia Juno Euphrosyne Hektor Thisbe Bamberga Patientia Herculina Doris Ursula Camilla Eugenia Iris Amphitrite Mercury Venus Earth Mars Asteroid Belt Jupiter Saturn Neptune Pluto Moon Terra Luna \
 Adrastea Ganymede Callisto Europa Himalia Amalthea Thebe Elara Metis Pasiphae Carme \
 Sinope Lysithea Ananke Leda Themisto Callirrhoe Praxidike Megaclite Locaste Taygete \
 Kalyke Autonoe Harpalyke Titan Rhea Iapetus Dione Tethys Enceladus Mimas Hyperion \
@@ -75,13 +71,13 @@ Galatea Despina Thalassa Charon', 2);
 function generateName() {
   let name = '';
   while (name.length < 4) {
-    name = nameGenerator.fill(randRange(5,10));
+    name = nameGenerator.fill(randRange(5, 10));
   }
 
   return name[0].toUpperCase() + name.slice(1);
 }
 
-function generateClassificationName(len) {
+function generateClassificationName() {
   return generateName();
   /*
   len = len || randRange(2, 8);
@@ -117,7 +113,7 @@ class AnsibleAtom {
   discoverNewChild() {
     const child = this._generateNewChild();
     if (!child) {
-        return null;
+      return null;
     }
 
     child.parent = this;
@@ -158,8 +154,6 @@ class SolarSystem extends AnsibleAtom {
     this.maxChildren = 0;
     this.maxCharacteristics = 10000;
     this.name = generateClassificationName();
-    const years = Math.random() * 1000;
-    const size = Math.random() * 1000;
     this.description = 'This solar system is \'uge!';
   }
 
@@ -185,15 +179,15 @@ class Monument extends AnsibleAtom {
 
   static _generateDescription() {
     // TODO: don't do a choose, need to pick 2 from the range.
-    var physical = () => {
+    const physical = () => {
       return choose(['ancient', 'old', 'crumbling', 'historic', 'royal', 'imperial', 'sunken', 'twisted', 'lucky', 'magnificient', 'glorious', 'shining', 'tall', 'cracked', 'great', 'big', 'huge', 'giant', 'grand', 'gigantic', 'colossal', 'tremendous', 'gargantuan', 'moss-covered', 'haloed', 'gleaming']);
-    }
+    };
 
     let description = 'This monument is a ';
     const numPhysical = randRange(1, 2);
-    for (var i = 0; i < numPhysical; i++) {
+    for (let i = 0; i < numPhysical; i++) {
       description += physical();
-      if (i < numPhysical-1) {
+      if (i < numPhysical - 1) {
         description += ', ';
       }
     }
@@ -225,12 +219,12 @@ class Galaxy extends AnsibleAtom {
   }
 
   _generateNewChild() {
-    const childType = choose([BlackHole, SolarSystem, Monument]);
-    return new childType();
+    const ChildType = choose([BlackHole, SolarSystem, Monument]);
+    return new ChildType();
   }
 
   static _generateName() {
-    const standardName = function() {
+    const standardName = () => {
       return generateName();
     };
 
@@ -244,56 +238,55 @@ class Galaxy extends AnsibleAtom {
 }
 
 export class RandomSensor {
-    constructor() {
-        this.currentNode = null;
-    }
-    
-    retrieveData() {
-        if (!this.currentNode) {
-            // Let's start a node!
-            this.currentNode = new Galaxy();
-            return `Lets talk about ${this.currentNode.name}. ${this.currentNode.description}`;
-        }
+  constructor() {
+    this.currentNode = null;
+  }
 
-        const newNode = this.walk();
-        if (this.currentNode != newNode) {
-            this.currentNode = newNode;
-            return `Lets talk about ${newNode.name}. ${newNode.description}`;
-        }
-
-        // We now have a current node. Decide if we want to print a characteristic about this node, or make a new child.
-        if (Math.random() < 0.25 && this.currentNode.children < this.currentNode.maxChildren) {
-            // Make a new child:
-            const childNode = this.currentNode.discoverNewChild();
-            if (!childNode.isTerminal()) {
-              this.currentNode = childNode;
-            }
-            return `It has a child ${childNode.name}. ${childNode.description}`;
-        } else if (Math.random() < 0.2) {
-            return `We are talking about ${newNode.name}`;
-        } else {
-            return this.currentNode.discoverNewCharacteristic();
-        }
+  retrieveData() {
+    if (!this.currentNode) {
+      // Let's start a node!
+      this.currentNode = new Galaxy();
+      return `Lets talk about ${this.currentNode.name}. ${this.currentNode.description}`;
     }
 
-    walk() {
-        let newNode = this.currentNode;
-        const numSteps = Math.floor(Math.random()*5) + 1;
-        let i = 0;
-        for (i = 0; i < numSteps; i++) {
-            if (this.currentNode.parent && Math.random() < 0.25) {
-                newNode = this.currentNode.parent;
-            } else if (this.currentNode.children.length > 0 && Math.random() < 0.25) {
-                newNode = choose(this.currentNode.children);
-            }
-        }
-
-        return newNode;
+    const newNode = this.walk();
+    if (this.currentNode !== newNode) {
+      this.currentNode = newNode;
+      return `Lets talk about ${newNode.name}. ${newNode.description}`;
     }
+
+    // We now have a current node. Decide if we want to print a characteristic about this node, or make a new child.
+    if (Math.random() < 0.25 && this.currentNode.children < this.currentNode.maxChildren) {
+      // Make a new child:
+      const childNode = this.currentNode.discoverNewChild();
+      if (!childNode.isTerminal()) {
+        this.currentNode = childNode;
+      }
+      return `It has a child ${childNode.name}. ${childNode.description}`;
+    } else if (Math.random() < 0.2) {
+      return `We are talking about ${newNode.name}`;
+    }
+
+    return this.currentNode.discoverNewCharacteristic();
+  }
+
+  walk() {
+    let newNode = this.currentNode;
+    const numSteps = Math.floor(Math.random() * 5) + 1;
+    for (let i = 0; i < numSteps; i++) {
+      if (this.currentNode.parent && Math.random() < 0.25) {
+        newNode = this.currentNode.parent;
+      } else if (this.currentNode.children.length > 0 && Math.random() < 0.25) {
+        newNode = choose(this.currentNode.children);
+      }
+    }
+
+    return newNode;
+  }
 }
 
 export class StaticSensor {
-    retrieveData() {
-        return 'Earth is roughly a sphere.'
-    }
-};
+  retrieveData() {
+    return 'Earth is roughly a sphere.';
+  }
+}
