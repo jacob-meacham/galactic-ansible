@@ -1,5 +1,3 @@
-'use strict';
-
 export const config = {
   auth: {
     consumerKey: process.env.CONSUMER_KEY,

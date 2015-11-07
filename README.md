@@ -1,10 +1,28 @@
-# galactic-ansible
+<big><h1 align="center">galactic-ansible</h1></big>
 
-// TODO: Try babel instead of traceur
+<p align="center">
+  <a href="https://coveralls.io/r/jacob-meacham/galactic-ansible">
+    <img src="https://img.shields.io/coveralls/jacob-meacham/galactic-ansible.svg?style=flat-square"
+         alt="Coverage Status">
+  </a>
+
+  <a href="https://david-dm.org/jacob-meacham/galactic-ansible.svg">
+    <img src="https://david-dm.org/jacob-meacham/galactic-ansible.svg?style=flat-square"
+         alt="Dependency Status">
+  </a>
+
+  <a href="https://github.com/jacob-meacham/galactic-ansible/blob/master/LICENSE">
+    <img src="https://img.shields.io/npm/l/galactic-ansible.svg?style=flat-square"
+         alt="License">
+  </a>
+</p>
 
 A gamma blast has scoured the dominant race, the Aaxians (a dark matter, silicon-based lifeform), from the universe. Beyond a few, crumbling monuments, their only legacy is the galactic ansible, a solar-system sized computer capable of faster-than-light communication. It has somehow gotten ahold of a twitter account, and is fruitlessly continuing its goal of documenting the universe.
 
 Keep everything in a hierarchical DB. Both parent and child pointers are stored, along with a name. Movement can happen up or down the hierarchy, either defining more at a current node, adding a sibling node, or adding a child node. At some levels, there are a finite number of children (for instance, number of planets in a solar system), so we must keep that constraint in mind.
+
+TODO:
+Move to babel 6 when it stabilizes.
 
 Node
 	Parent
