@@ -1,20 +1,49 @@
 {
   "name": "galactic-ansible",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "files": [
+    "bin/",
+    "dist/"
+  ],
   "scripts": {
-    "prepublish": "npm run build",
-    "start": "npm run build && node index.js",
-    "watch": "watchy -sw src -- npm run build",
-    "build": "traceur --dir src/ generated/ --modules=commonjs --sourcemap"
+    "clean": "rimraf dist",
+    "lint": "eslint src test",
+    "check": "npm run lint -s && dependency-check package.json --entry src",
+    "watch": "watch 'npm run build' src test",
+    "prebuild": "npm run check -s && npm run clean -s",
+    "build": "babel --optional runtime src -d dist",
+    "postbuild": "npm run test -s",
+    "coverage": "babel-node node_modules/isparta/bin/isparta cover test/index.js",
+    "coveralls": "npm run coverage -s && coveralls < coverage/lcov.info",
+    "postcoveralls": "rimraf ./coverage",
+    "toc": "doctoc --github --title \"# Changelog\" CHANGELOG.md"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacob-meacham/galactic-ansible.git"
+  },
+  "keywords": [
+    "twitter"
+  ],
+  "author": "Jacob Meacham <jacob.e.meacham@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jacob-meacham/galactic-ansible/issues"
+  },
+  "homepage": "https://github.com/jacob-meacham/galactic-ansible#readme",
+  "devDependencies": {
+    "eslint": "*",
+    "babel-eslint": "*",
+    "babel": "*",
+    "coveralls": "*",
+    "isparta": "*",
+    "rimraf": "*",
+    "dependency-check": "*",
+    "watch": "*",
+    "doctoc": "*"
   },
   "dependencies": {
-    "node-twitterbot": "0.2.2",
-    "pg": "4.4.3",
-    "traceur": "0.0.91",
-    "watchy": "0.6.5",
-    "weighted": "^0.3.0"
-  },
-  "devDependencies": {
-    "commander": "^2.9.0"
+    "babel-runtime": "*"
   }
 }
