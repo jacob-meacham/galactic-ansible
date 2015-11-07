@@ -1,4 +1,3 @@
-'use strict';
 /* node = {
     characteristics: [],
     type: string,
