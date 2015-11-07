@@ -41,9 +41,11 @@
     "rimraf": "*",
     "dependency-check": "*",
     "watch": "*",
-    "doctoc": "*"
+    "doctoc": "*",
+    "babel-preset-es2015": "^6.1.2"
   },
   "dependencies": {
-    "babel-runtime": "*"
+    "babel-runtime": "*",
+    "node-twitterbot": "^0.2.2"
   }
 }
