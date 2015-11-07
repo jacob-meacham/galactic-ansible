@@ -37,6 +37,7 @@
   "homepage": "https://github.com/jacob-meacham/galactic-ansible#readme",
   "devDependencies": {
     "babel": "5.x",
+    "babel-eslint": "^4.1.5",
     "chai": "^2.0.0",
     "coveralls": "*",
     "dependency-check": "*",
@@ -53,6 +54,7 @@
     "watch": "*"
   },
   "dependencies": {
+    "deck": "0.0.4",
     "node-twitterbot": "0.2.2"
   }
 }
