@@ -1,3 +1,5 @@
+import {chooseByFrequency} from './random';
+
 function generateNgrams(corpus, order) {
   function generateNgram(word, n) {
     if (n === 0 || n > word.length) {
@@ -61,21 +63,8 @@ export class MarkovWordGenerator {
   }
 
   fill(limit) {
-    const chooseByFrequency = (map) => {
-      const target = Math.random();
-      let sum = 0;
-      for (const [key, node] of map) {
-        sum += node.frequency;
-        if (sum >= target) {
-          return [key, node];
-        }
-      }
-
-      return null;
-    };
     // TODO: Return array instead of string?
     let val = '';
-    // TODO: Use a picker library.
     let [key, cur] = chooseByFrequency(this.db); // eslint-disable-line prefer-const
 
     val += key;
