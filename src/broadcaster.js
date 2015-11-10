@@ -25,7 +25,7 @@ export class FileBroadcaster {
   broadcast(message) {
     fs.writeFile(this.file, message, err => {
       if (err) {
-        // TODO
+        console.err('could not write to file.');
       }
     });
   }
