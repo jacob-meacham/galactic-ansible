@@ -18,6 +18,9 @@
 // TODO: Can specify what type and how many of each child you have.
 // TODO: Similarly, can specify what type and how many of each characteristic you have
 // TODO: Specify siblings?
+// TODO: Specify the number and types of characteristics and number and types of children allowed.
+//    - Neighbors can be siblings, so it needs to be possible to create siblings for yourself (if allowed). Maybe
+//      neighbors aren't characteristics, but are part of the parent.
 
 import {randRange, choose} from './random';
 import {MarkovWordGenerator} from './markov';
@@ -90,15 +93,35 @@ function generateClassificationName() {
   */
 }
 
+/*
+  childrenDescription: {
+    "type": number allowed, frequency
+  }
+
+  children: {
+    "type": []
+  }
+
+  characteristicDescription: {
+    "type": number allowed, frequency
+  }
+
+  characteristics: {
+    "type": []
+  }
+*/
+
 class AnsibleAtom {
-  constructor() {
+  constructor(childrenDescriptor, characteristicsDescriptor) {
     this.parent = null;
-    this.children = [];
-    this.maxChildren = 0;
-    this.maxCharacteristics = 0;
+
+    this.childrenDescriptor = childrenDescriptor;
+    this.children = {};
+
+    this.characteristicsDescriptor = characteristicsDescriptor;
+    this.Characteristics = {};
     this.name = '';
     this.description = '';
-    this.characteristics = [];
   }
 
   _generateCharacteristic() {
@@ -128,6 +151,10 @@ class AnsibleAtom {
 
   isTerminal() {
     return this.maxChildren === 0 && this.maxCharacteristics === 0;
+  }
+
+  isExhausted() {
+
   }
 }
 
