@@ -22,7 +22,7 @@
 //    - Neighbors can be siblings, so it needs to be possible to create siblings for yourself (if allowed). Maybe
 //      neighbors aren't characteristics, but are part of the parent.
 
-import {randRange, choose} from './random';
+import * as rand from './random';
 import {MarkovWordGenerator} from './markov';
 
 // function dateGenerator() {
@@ -45,19 +45,19 @@ function addIf(nodule, chance) {
 
 function generateAtmosphere() {
   const atmosphereAdjective = () => {
-    return choose(['wispy', 'noxious', 'fumey', 'sparse', 'heavy', 'dense', 'light', 'overbearing']);
+    return rand.choose(['wispy', 'noxious', 'fumey', 'sparse', 'heavy', 'dense', 'light', 'overbearing']);
   };
 
   const atmopshereElement = () => {
-    return choose(['ammonia', 'oxygen', 'nitrogen', 'helium', 'hydrogen', 'dark matter']);
+    return rand.choose(['ammonia', 'oxygen', 'nitrogen', 'helium', 'hydrogen', 'dark matter']);
   };
 
-  const description = addIf(choose(['purple', 'grey', 'white', 'blue', 'yellow', 'orange', 'tan', 'pink']) + ', ', 0.5) + atmosphereAdjective() + addIf(', and ' + atmosphereAdjective(), 0.25);
+  const description = addIf(rand.choose(['purple', 'grey', 'white', 'blue', 'yellow', 'orange', 'tan', 'pink']) + ', ', 0.5) + atmosphereAdjective() + addIf(', and ' + atmosphereAdjective(), 0.25);
   if (Math.random() < 0.25) {
     return 'There is no atmopshere to speak of';
   }
 
-  return choose(['The atmopshere is one of ' + atmopshereElement() + ' and is ' + description, 'The atmoshpere is full of ' + description + ' clouds, made of ' + atmopshereElement()]);
+  return rand.choose(['The atmopshere is one of ' + atmopshereElement() + ' and is ' + description, 'The atmoshpere is full of ' + description + ' clouds, made of ' + atmopshereElement()]);
 }
 
 // TODO: Short name, with something like
@@ -73,7 +73,7 @@ Galatea Despina Thalassa Charon', 2);
 function generateName() {
   let name = '';
   while (name.length < 4) {
-    name = nameGenerator.fill(randRange(5, 10));
+    name = nameGenerator.fill(rand.randRange(5, 10));
   }
 
   return name[0].toUpperCase() + name.slice(1);
@@ -94,13 +94,45 @@ function generateClassificationName() {
 }
 
 /*
-  childrenDescription: {
-    "type": number allowed, frequency
+  childrenDescription: [{
+    "type": foo,
+    range: { min: 0, max: 5 }
+    chance: 1
   }
+
+  // lazyChild - just need type?
 
   children: {
     "type": []
   }
+
+  characteristics: []
+  characteristic:
+
+  constraint:
+  {
+    type: 'anything'
+    number: 2000
+    unfilled: 1000 // If necessary
+    constraint: no, lt, gt, eq
+    description: foo
+  }
+
+  example constraints:
+  age,
+  # of {fast food joints}|{alien species}|{monuments}|{solar systems}|{...}
+
+  // When generating characteristics, children ask their parent if it is a constraint. If it is, then we'll know how big the constraint needs to be. The parent will need to query other children to determine if the constraint has been filled.
+  // When creating children, the first step is to generate them, and the second step is to do constraint solving with the children. This means, for all characteristics that are constraints that need to be filled, ask every child if they can fill that constraint.
+  // If they can, then the constraints are solved via the children. This means that all constraint characteristics have to flow down hierarchically (ie they can't skip, but they can defer those constraints lower).
+  // Children should be lightweight until they're visited. Visiting them is what creates their children underneath.
+  // We don't want to generate children when we go in, because there should be billions of them...instead, we'll need to use a descriptor to decide what types of children to generate, in what way. We'll still need constraints, for things like age or # of things,
+  // but as long as it's in the correct direction, and we do a reasonable job of scaling it amongst possible children, we should be ok.
+
+  characteristicStems = Map({stem: foo, frequency: 0.3})
+
+  // TODO: How to put multiple characteristics together, to maximally fill up a tweet?
+  // Sort by length of description, make sure that descriptions don't have initial stems - those should be separate
 
   characteristicDescription: {
     "type": number allowed, frequency
@@ -111,17 +143,20 @@ function generateClassificationName() {
   }
 */
 
+// TODO: A lazy map instead, where we insert children and characteristics in at instantiation time, but only generate them when needed.
 class AnsibleAtom {
   constructor(childrenDescriptor, characteristicsDescriptor) {
     this.parent = null;
-
-    this.childrenDescriptor = childrenDescriptor;
-    this.children = {};
+    this.availableChildren = _generateChildren(childrenDescriptor);
 
     this.characteristicsDescriptor = characteristicsDescriptor;
-    this.Characteristics = {};
+    this.characteristics = {};
     this.name = '';
     this.description = '';
+  }
+
+  _generateChildren(childrenDescriptor) {
+    for
   }
 
   _generateCharacteristic() {
@@ -133,6 +168,8 @@ class AnsibleAtom {
   }
 
   discoverNewChild() {
+    const [key, node] = rand.chooseByFrequency(this.childrenDescriptor);
+
     const child = this._generateNewChild();
     if (!child) {
       return null;
