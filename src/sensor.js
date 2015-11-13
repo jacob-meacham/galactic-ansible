@@ -145,18 +145,13 @@ function generateClassificationName() {
 
 // TODO: A lazy map instead, where we insert children and characteristics in at instantiation time, but only generate them when needed.
 class AnsibleAtom {
-  constructor(childrenDescriptor, characteristicsDescriptor) {
+  constructor() {
     this.parent = null;
-    this.availableChildren = _generateChildren(childrenDescriptor);
 
-    this.characteristicsDescriptor = characteristicsDescriptor;
-    this.characteristics = {};
+    this.children = [];
+    this.characteristics = [];
     this.name = '';
     this.description = '';
-  }
-
-  _generateChildren(childrenDescriptor) {
-    for
   }
 
   _generateCharacteristic() {
@@ -168,8 +163,6 @@ class AnsibleAtom {
   }
 
   discoverNewChild() {
-    const [key, node] = rand.chooseByFrequency(this.childrenDescriptor);
-
     const child = this._generateNewChild();
     if (!child) {
       return null;
@@ -207,7 +200,7 @@ class BlackHole extends AnsibleAtom {
   }
 
   _generateCharacteristic() {
-    return choose([generateName(), generateAtmosphere()]);
+    return rand.choose([generateName(), generateAtmosphere()]);
   }
 }
 
@@ -221,7 +214,7 @@ class SolarSystem extends AnsibleAtom {
   }
 
   _generateCharacteristic() {
-    return choose([generateName(), generateAtmosphere()]);
+    return rand.choose([generateName(), generateAtmosphere()]);
   }
 }
 
@@ -243,11 +236,11 @@ class Monument extends AnsibleAtom {
   static _generateDescription() {
     // TODO: don't do a choose, need to pick 2 from the range.
     const physical = () => {
-      return choose(['ancient', 'old', 'crumbling', 'historic', 'royal', 'imperial', 'sunken', 'twisted', 'lucky', 'magnificient', 'glorious', 'shining', 'tall', 'cracked', 'great', 'big', 'huge', 'giant', 'grand', 'gigantic', 'colossal', 'tremendous', 'gargantuan', 'moss-covered', 'haloed', 'gleaming']);
+      return rand.choose(['ancient', 'old', 'crumbling', 'historic', 'royal', 'imperial', 'sunken', 'twisted', 'lucky', 'magnificient', 'glorious', 'shining', 'tall', 'cracked', 'great', 'big', 'huge', 'giant', 'grand', 'gigantic', 'colossal', 'tremendous', 'gargantuan', 'moss-covered', 'haloed', 'gleaming']);
     };
 
     let description = 'This monument is a ';
-    const numPhysical = randRange(1, 2);
+    const numPhysical = rand.randRange(1, 2);
     for (let i = 0; i < numPhysical; i++) {
       description += physical();
       if (i < numPhysical - 1) {
@@ -257,12 +250,12 @@ class Monument extends AnsibleAtom {
 
     description += ' ';
     if (Math.random() < 0.9) {
-      description += choose(['stone', 'gold', 'copper', 'bronze', 'silver', 'white', 'black', 'green', 'gray', 'obsidian', 'wooden']);
+      description += rand.choose(['stone', 'gold', 'copper', 'bronze', 'silver', 'white', 'black', 'green', 'gray', 'obsidian', 'wooden']);
       description += ' ';
     }
 
     // TODO: Fix, as these are not unique.
-    description += choose(['tower', choose('', 'smiling', 'proud', 'wise', 'crying', 'singing', 'laughing') + choose('statue', 'statues', 'colossus'), 'bridge', 'towers', 'spire', 'spires', 'cathedral', 'church', 'masoleum', 'maze', 'castle', 'fort', 'keep']);
+    description += rand.choose(['tower', rand.choose('', 'smiling', 'proud', 'wise', 'crying', 'singing', 'laughing') + rand.choose('statue', 'statues', 'colossus'), 'bridge', 'towers', 'spire', 'spires', 'cathedral', 'church', 'masoleum', 'maze', 'castle', 'fort', 'keep']);
 
     return description;
   }
@@ -278,11 +271,11 @@ class Galaxy extends AnsibleAtom {
   }
 
   _generateCharacteristic() {
-    return choose(['Its nearest neighbor is ' + choose([Galaxy._generateName() + ' galaxy', 'a black hole', 'a dark matter reactor', 'the pocket universe ' + Galaxy._generateName()]), 'Its prominent feature is ' + choose(['a black hole', 'a dyson sphere', 'intelligent life', 'a historic event']), 'It has ' + randRange(1, 100) * 100000 + choose([' stars', ' planets', ' fast food joints'])]);
+    return rand.choose(['Its nearest neighbor is ' + rand.choose([Galaxy._generateName() + ' galaxy', 'a black hole', 'a dark matter reactor', 'the pocket universe ' + Galaxy._generateName()]), 'Its prominent feature is ' + rand.choose(['a black hole', 'a dyson sphere', 'intelligent life', 'a historic event']), 'It has ' + rand.randRange(1, 100) * 100000 + rand.choose([' stars', ' planets', ' fast food joints'])]);
   }
 
   _generateNewChild() {
-    const ChildType = choose([BlackHole, SolarSystem, Monument]);
+    const ChildType = rand.choose([BlackHole, SolarSystem, Monument]);
     return new ChildType();
   }
 
@@ -291,11 +284,11 @@ class Galaxy extends AnsibleAtom {
       return generateName();
     };
 
-    return choose([generateClassificationName, standardName])();
+    return rand.choose([generateClassificationName, standardName])();
   }
 
   static _generateDescription() {
-    const type = choose(['huge', 'giant', 'colossal', 'average', 'medium', 'small', 'tiny', 'miniscule']) + ' ' + choose(['grey', 'blue', 'green', 'rainbow', 'puke-colored', 'magenta', 'black as night']) + ' ' + choose(['elliptical', 'spherical', 'spiral', 'S0', 'irregular']);
+    const type = rand.choose(['huge', 'giant', 'colossal', 'average', 'medium', 'small', 'tiny', 'miniscule']) + ' ' + rand.choose(['grey', 'blue', 'green', 'rainbow', 'puke-colored', 'magenta', 'black as night']) + ' ' + rand.choose(['elliptical', 'spherical', 'spiral', 'S0', 'irregular']);
     return (`It is a ${type} galaxy.`);
   }
 }
@@ -340,7 +333,7 @@ export class RandomSensor {
       if (this.currentNode.parent && Math.random() < 0.25) {
         newNode = this.currentNode.parent;
       } else if (this.currentNode.children.length > 0 && Math.random() < 0.25) {
-        newNode = choose(this.currentNode.children);
+        newNode = rand.choose(this.currentNode.children);
       }
     }
 
