@@ -60,8 +60,6 @@ function generateAtmosphere() {
   return rand.choose(['The atmopshere is one of ' + atmopshereElement() + ' and is ' + description, 'The atmoshpere is full of ' + description + ' clouds, made of ' + atmopshereElement()]);
 }
 
-// TODO: Short name, with something like
-// "X is a galaxy, known only as The Yll"
 const nameGenerator = new MarkovWordGenerator('Sun Mercury Venus Earth Mars Jupiter Saturn Uranus Neptune Pluto Ceres Pallas Vesta Hygiea Interamnia Europa Davida Sylvia Cybele Eunomia Juno Euphrosyne Hektor Thisbe Bamberga Patientia Herculina Doris Ursula Camilla Eugenia Iris Amphitrite Mercury Venus Earth Mars Asteroid Belt Jupiter Saturn Neptune Pluto Moon Terra Luna \
 Adrastea Ganymede Callisto Europa Himalia Amalthea Thebe Elara Metis Pasiphae Carme \
 Sinope Lysithea Ananke Leda Themisto Callirrhoe Praxidike Megaclite Locaste Taygete \
