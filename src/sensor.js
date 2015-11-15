@@ -25,6 +25,8 @@
 import * as rand from './random';
 import {MarkovWordGenerator} from './markov';
 
+const CBuffer = require('CBuffer');
+
 // function dateGenerator() {
 //   let newDate = randRange(1, 30000) + ' ' + randomLetter().toUpperCase() + randomLetter().toUpperCase();
 
@@ -177,12 +179,12 @@ class AnsibleAtom {
     return characteristic;
   }
 
-  isTerminal() {
-    return this.maxChildren === 0 && this.maxCharacteristics === 0;
+  canHaveChildren() {
+    return this.children.length < this.maxChildren;
   }
 
-  isExhausted() {
-
+  hasMoreCharacteristics() {
+    return this.characteristics.length < this.maxCharacteristics;
   }
 }
 
@@ -190,25 +192,11 @@ class BlackHole extends AnsibleAtom {
   constructor() {
     super();
     this.maxChildren = 0;
-    this.maxCharacteristics = 10000;
+    this.maxCharacteristics = 2;
     this.name = generateClassificationName();
     const years = Math.random() * 1000;
     const size = Math.random() * 1000;
     this.description = `This black hole will last for ${years} years, and is ${size} km large.`;
-  }
-
-  _generateCharacteristic() {
-    return rand.choose([generateName(), generateAtmosphere()]);
-  }
-}
-
-class SolarSystem extends AnsibleAtom {
-  constructor() {
-    super();
-    this.maxChildren = 0;
-    this.maxCharacteristics = 10000;
-    this.name = generateClassificationName();
-    this.description = 'This solar system is \'uge!';
   }
 
   _generateCharacteristic() {
@@ -259,6 +247,25 @@ class Monument extends AnsibleAtom {
   }
 }
 
+class SolarSystem extends AnsibleAtom {
+  constructor() {
+    super();
+    this.maxChildren = 5;
+    this.maxCharacteristics = 10;
+    this.name = generateClassificationName();
+    this.description = 'This solar system is \'uge!';
+  }
+
+  _generateCharacteristic() {
+    return rand.choose([generateName(), generateAtmosphere()]);
+  }
+
+  _generateNewChild() {
+    const ChildType = rand.choose([BlackHole, Monument]);
+    return new ChildType();
+  }
+}
+
 class Galaxy extends AnsibleAtom {
   constructor() {
     super();
@@ -294,6 +301,8 @@ class Galaxy extends AnsibleAtom {
 export class RandomSensor {
   constructor() {
     this.currentNode = null;
+    this.lastVisited = new CBuffer(5);
+    this.stepsAtCurrent = 0;
   }
 
   retrieveData() {
@@ -303,35 +312,55 @@ export class RandomSensor {
       return `Lets talk about ${this.currentNode.name}. ${this.currentNode.description}`;
     }
 
+    // Decide if we're done at this node:
+    // Probability from .1-.9 for 0-4 characteristics.
+    if ((Math.random() < 0.1 + 0.8 * (4 - this.stepsAtCurrent)) && this.currentNode.hasMoreCharacteristics()) {
+      this.stepsAtCurrent++;
+      return this.currentNode.discoverNewCharacteristic();
+    }
+
+    // It's time to move on!
+    this.stepsAtCurrent = 0;
+    this.lastVisited.push(this.currentNode);
     const newNode = this.walk();
-    if (this.currentNode !== newNode) {
-      this.currentNode = newNode;
-      return `Lets talk about ${newNode.name}. ${newNode.description}`;
-    }
-
-    // We now have a current node. Decide if we want to print a characteristic about this node, or make a new child.
-    if (Math.random() < 0.25 && this.currentNode.children < this.currentNode.maxChildren) {
-      // Make a new child:
-      const childNode = this.currentNode.discoverNewChild();
-      if (!childNode.isTerminal()) {
-        this.currentNode = childNode;
-      }
-      return `It has a child ${childNode.name}. ${childNode.description}`;
-    } else if (Math.random() < 0.2) {
-      return `We are talking about ${newNode.name}`;
-    }
-
-    return this.currentNode.discoverNewCharacteristic();
+    this.currentNode = newNode;
+    return `Lets talk about ${newNode.name}. ${newNode.description}`;
   }
 
+  // TODO: Sometimes jump to a totally random node.
   walk() {
+    console.log('DEBUG: walking to a new node');
     let newNode = this.currentNode;
-    const numSteps = Math.floor(Math.random() * 5) + 1;
-    for (let i = 0; i < numSteps; i++) {
-      if (this.currentNode.parent && Math.random() < 0.25) {
-        newNode = this.currentNode.parent;
-      } else if (this.currentNode.children.length > 0 && Math.random() < 0.25) {
-        newNode = rand.choose(this.currentNode.children);
+    for (let step = 0; step < 20; step++) {
+      // Choose from making a new child, the parent, or a current child.
+      // Heavily weight those that haven't been seen recently.
+
+      // TODO: Weight this.
+      const choices = [];
+      if (newNode.canHaveChildren()) {
+        choices.push('__new_child__');
+      }
+
+      for (const child of newNode.children) {
+        if (this.lastVisited.indexOf(child) === -1) {
+          choices.push(child);
+        }
+      }
+
+      if (newNode.parent !== null) {
+        choices.push(newNode.parent);
+      }
+
+      let candidateNode = rand.choose(choices);
+      if (candidateNode === '__new_child__') {
+        // Generate a new child:
+        candidateNode = newNode.discoverNewChild();
+      }
+
+      newNode = candidateNode;
+      if (this.lastVisited.indexOf(newNode) === -1) {
+        // Discovered a node we haven't seen recently.
+        break;
       }
     }
 
