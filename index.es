@@ -1,4 +1,2 @@
-"use strict";
-
-import {beginScan} from './src/index'
-beginScan();
+import { beginScan } from './src/index';
+beginScan(true);

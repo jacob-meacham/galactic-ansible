@@ -301,14 +301,16 @@ class Galaxy extends AnsibleAtom {
 export class RandomSensor {
   constructor() {
     this.currentNode = null;
+    this.root = new Galaxy();
     this.lastVisited = new CBuffer(5);
     this.stepsAtCurrent = 0;
+
+    this.debugVisits = new Map();
   }
 
   retrieveData() {
     if (!this.currentNode) {
-      // Let's start a node!
-      this.currentNode = new Galaxy();
+      this.currentNode = this.root;
       return `Lets talk about ${this.currentNode.name}. ${this.currentNode.description}`;
     }
 
@@ -329,7 +331,6 @@ export class RandomSensor {
 
   // TODO: Sometimes jump to a totally random node.
   walk() {
-    console.log('DEBUG: walking to a new node');
     let newNode = this.currentNode;
     for (let step = 0; step < 20; step++) {
       // Choose from making a new child, the parent, or a current child.
@@ -364,12 +365,42 @@ export class RandomSensor {
       }
     }
 
+    this._debugRecordVisit(newNode);
     return newNode;
+  }
+
+  _debugRecordVisit(node) {
+    if (!this.debugVisits.has(node)) {
+      this.debugVisits.set(node, {
+        visits: 1
+      });
+    }
+
+    const record = this.debugVisits.get(node);
+    record.visits++;
+  }
+
+  debugOutput() {
+    RandomSensor._debugOutputTree(this.root, this.debugVisits, 0);
+  }
+
+  static _debugOutputTree(node, visits, indentLevel) {
+    const indentString = Array(indentLevel + 1).join('  ');
+    const numVisits = visits.get(node).visits;
+    console.log(`${indentString}${node.name} (${node.constructor.name}) - vs: ${numVisits}, \
+χ: ${node.children.length}, cha: ${node.characteristics.length}`);
+    for (const child of node.children) {
+      RandomSensor._debugOutputTree(child, visits, indentLevel + 1);
+    }
   }
 }
 
 export class StaticSensor {
   retrieveData() {
     return 'Earth is roughly a sphere.';
+  }
+
+  debugOutput() {
+    return null;
   }
 }
