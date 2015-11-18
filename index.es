@@ -1,2 +1,2 @@
 import { beginScan } from './src/index';
-beginScan(true);
+beginScan(process.argv);
