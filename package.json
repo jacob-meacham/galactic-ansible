@@ -55,6 +55,7 @@
   },
   "dependencies": {
     "CBuffer": "^1.1.1",
+    "commander": "^2.9.0",
     "deck": "0.0.4",
     "node-twitterbot": "0.2.2"
   }
