@@ -14,7 +14,6 @@
 // thing (number of)
 // Most prominent feature (link to a child?)
 
-// TODO: Make walk more sticky, or make it go down more often.
 // TODO: Can specify what type and how many of each child you have.
 // TODO: Similarly, can specify what type and how many of each characteristic you have
 // TODO: Specify siblings?
