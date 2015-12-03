@@ -21,3 +21,11 @@ export function randomLetter() {
 export function randRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export function addIf(nodule, chance) {
+  if (Math.random() <= chance) {
+    return nodule;
+  }
+
+  return '';
+}
