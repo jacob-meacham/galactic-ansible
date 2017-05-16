@@ -5,10 +5,10 @@ const TwitterBot = require('node-twitterbot').TwitterBot;
 export class TwitterBroadcaster {
   constructor() {
     this.bot = new TwitterBot({
-      'consumer_secret': config.auth.consumerSecret,
-      'consumer_key': config.auth.consumerKey,
-      'access_token': config.auth.accessToken,
-      'access_token_secret': config.auth.tokenSecret
+      consumer_secret: config.auth.consumerSecret,
+      consumer_key: config.auth.consumerKey,
+      access_token: config.auth.accessToken,
+      access_token_secret: config.auth.tokenSecret
     });
   }
 

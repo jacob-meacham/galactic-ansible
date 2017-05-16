@@ -20,7 +20,8 @@ export class RandomSensor {
 
     // Decide if we're done at this node:
     // Probability from .1-.9 for 0-4 characteristics.
-    if ((Math.random() < 0.1 + 0.8 * (4 - this.stepsAtCurrent)) && this.currentNode.hasMoreCharacteristics()) {
+    if ((Math.random() < 0.1 + 0.8 * (4 - this.stepsAtCurrent)) &&
+      this.currentNode.hasMoreCharacteristics()) {
       this.stepsAtCurrent++;
       return this.currentNode.discoverNewCharacteristic();
     }

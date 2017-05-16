@@ -1,6 +1,6 @@
 import AnsibleAtom from './atom';
 import * as rand from './random';
-import {generateName} from './spaceNameGenerator';
+import { generateName } from './spaceNameGenerator';
 
 // TODO: How should this relate to, eg creators of the monument? Should it be done this way
 // or should it be done differently? How do characteristics work?
@@ -19,9 +19,7 @@ export default class Monument extends AnsibleAtom {
 
   static _generateDescription() {
     // TODO: don't do a choose, need to pick 2 from the range.
-    const physical = () => {
-      return rand.choose(['ancient', 'old', 'crumbling', 'historic', 'royal', 'imperial', 'sunken', 'twisted', 'lucky', 'magnificient', 'glorious', 'shining', 'tall', 'cracked', 'great', 'big', 'huge', 'giant', 'grand', 'gigantic', 'colossal', 'tremendous', 'gargantuan', 'moss-covered', 'haloed', 'gleaming']);
-    };
+    const physical = () => rand.choose(['ancient', 'old', 'crumbling', 'historic', 'royal', 'imperial', 'sunken', 'twisted', 'lucky', 'magnificient', 'glorious', 'shining', 'tall', 'cracked', 'great', 'big', 'huge', 'giant', 'grand', 'gigantic', 'colossal', 'tremendous', 'gargantuan', 'moss-covered', 'haloed', 'gleaming']);
 
     let description = 'This monument is a ';
     const numPhysical = rand.randRange(1, 2);

@@ -2,23 +2,20 @@ import AnsibleAtom from './atom';
 import BlackHole from './blackHole';
 import Monument from './monument';
 import * as rand from './random';
-import {generateName, generateClassificationName} from './spaceNameGenerator';
+import { generateName, generateClassificationName } from './spaceNameGenerator';
 
 function generateAtmosphere() {
-  const atmosphereAdjective = () => {
-    return rand.choose(['wispy', 'noxious', 'fumey', 'sparse', 'heavy', 'dense', 'light', 'overbearing']);
-  };
+  const atmosphereAdjective = () => rand.choose(['wispy', 'noxious', 'fumey', 'sparse', 'heavy', 'dense', 'light', 'overbearing']);
 
-  const atmopshereElement = () => {
-    return rand.choose(['ammonia', 'oxygen', 'nitrogen', 'helium', 'hydrogen', 'dark matter']);
-  };
+  const atmopshereElement = () => rand.choose(['ammonia', 'oxygen', 'nitrogen', 'helium', 'hydrogen', 'dark matter']);
 
-  const description = rand.addIf(rand.choose(['purple', 'grey', 'white', 'blue', 'yellow', 'orange', 'tan', 'pink']) + ', ', 0.5) + atmosphereAdjective() + rand.addIf(', and ' + atmosphereAdjective(), 0.25);
+  const description = rand.addIf(`${rand.choose(['purple', 'grey', 'white', 'blue', 'yellow', 'orange', 'tan', 'pink'])}, `, 0.5) + atmosphereAdjective() + rand.addIf(`, and ${atmosphereAdjective()}`, 0.25);
   if (Math.random() < 0.25) {
     return 'There is no atmopshere to speak of';
   }
 
-  return rand.choose(['The atmopshere is one of ' + atmopshereElement() + ' and is ' + description, 'The atmoshpere is full of ' + description + ' clouds, made of ' + atmopshereElement()]);
+  return rand.choose([`The atmopshere is one of ${atmopshereElement()} and is ${description}`,
+    `The atmoshpere is full of ${description} clouds, made of ${atmopshereElement()}`]);
 }
 
 export default class SolarSystem extends AnsibleAtom {

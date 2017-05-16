@@ -1,4 +1,4 @@
-import {chooseByFrequency} from './random';
+import { chooseByFrequency } from './random';
 
 function generateNgrams(corpus, order) {
   function generateNgram(word, n) {
