@@ -1,11 +1,23 @@
 {
   "presets": [
-    ["env", { "modules": false } ],
-    "es2015",
+    ["env", {
+      "targets": {
+        "node": 7.0
+      },
+      "useBuiltIns": true
+    }]
   ],
   "plugins": [
-    "transform-class-properties",
-    "transform-es2015-modules-commonjs",
-    "transform-object-rest-spread",
-  ]
+    "transform-runtime",
+    ["transform-object-rest-spread", {
+      "useBuiltIns": true
+    }],
+    "espower",
+    "add-module-exports"
+  ],
+  "env": {
+    "development": {
+      "sourceMaps": "inline"
+    }
+  }
 }
