@@ -1,13 +1,4 @@
-/* node = {
-    characteristics: [],
-    type: string,
-    parent: node
-    children: []
-    max-children: Number,
-    description: string
- }*/
-
- // TODO: Characteristics also need a type, so that we don't end up redefining it.
+// TODO: Characteristics also need a type, so that we don't end up redefining it.
 
 // TODO: Characteristic types:
 // Neighbor
@@ -20,6 +11,17 @@
 // TODO: Specify the number and types of characteristics and number and types of children allowed.
 //    - Neighbors can be siblings, so it needs to be possible to create siblings for yourself (if allowed). Maybe
 //      neighbors aren't characteristics, but are part of the parent.
+
+/*
+  node = {
+    characteristics: [],
+    type: string,
+    parent: node
+    children: []
+    max-children: Number,
+    description: string
+ }
+ */
 
 /*
   childrenDescription: [{
@@ -74,44 +76,44 @@
 // TODO: A lazy map instead, where we insert children and characteristics in at instantiation time, but only generate them when needed.
 export default class AnsibleAtom {
   constructor() {
-    this.parent = null;
+    this.parent = null
 
-    this.children = [];
-    this.characteristics = [];
-    this.name = '';
-    this.description = '';
+    this.children = []
+    this.characteristics = []
+    this.name = ''
+    this.description = ''
   }
 
   _generateCharacteristic() {
-    return '';
+    return ''
   }
 
   _generateNewChild() {
-    return null;
+    return null
   }
 
   discoverNewChild() {
-    const child = this._generateNewChild();
+    const child = this._generateNewChild()
     if (!child) {
-      return null;
+      return null
     }
 
-    child.parent = this;
-    this.children.push(child);
-    return child;
+    child.parent = this
+    this.children.push(child)
+    return child
   }
 
   discoverNewCharacteristic() {
-    const characteristic = this._generateCharacteristic();
-    this.characteristics.push(characteristic);
-    return characteristic;
+    const characteristic = this._generateCharacteristic()
+    this.characteristics.push(characteristic)
+    return characteristic
   }
 
   canHaveChildren() {
-    return this.children.length < this.maxChildren;
+    return this.children.length < this.maxChildren
   }
 
   hasMoreCharacteristics() {
-    return this.characteristics.length < this.maxCharacteristics;
+    return this.characteristics.length < this.maxCharacteristics
   }
 }

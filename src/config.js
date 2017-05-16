@@ -5,4 +5,4 @@ export const config = {
     accessToken: process.env.ACCESS_TOKEN,
     tokenSecret: process.env.ACCESS_TOKEN_SECRET
   }
-};
+}
