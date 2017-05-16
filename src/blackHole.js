@@ -1,5 +1,5 @@
 import AnsibleAtom from './atom';
-import {generateName, generateClassificationName} from './spaceNameGenerator';
+import { generateName, generateClassificationName } from './spaceNameGenerator';
 
 export default class BlackHole extends AnsibleAtom {
   constructor() {

@@ -4,6 +4,9 @@
     "node": true,
     "es6": true
   },
+  "parserOptions": {
+    "sourceType": "module",
+  },
   "rules": {
     "no-unused-vars": [2, {"varsIgnorePattern": "_", "argsIgnorePattern": "_"}],
     "arrow-spacing": 2,
@@ -24,22 +27,27 @@
     "dot-notation": 2,
     "no-invalid-this": 2,
     "no-undefined": 2,
+    max-len: ["error", 100, { "ignoreComments": true, "ignoreStrings": true }],
     "camelcase": 2,
     "no-lonely-if": 2,
-    "space-return-throw-case": 2,
     "no-multi-str": 0,
     "no-console": 0,
-    "spaced-comment": 0
+    "spaced-comment": 0,
+    "space-after-keywords": 0,
+    "space-return-throw-case": 0,
+    "keyword-spacing": [2, {"before": true, "after": true}],
+    "no-empty-label": 0,
+    "no-labels": 2,
   },
   "extends": [
     "defaults/rules/eslint/best-practices/airbnb",
     "defaults/rules/eslint/errors/airbnb",
     "defaults/rules/eslint/es6/airbnb",
-    "defaults/rules/eslint/legacy/airbnb",
     "defaults/rules/eslint/node/airbnb",
     "defaults/rules/eslint/strict/airbnb",
     "defaults/rules/eslint/style/airbnb",
     "defaults/rules/eslint/variables/airbnb",
     "standard"
-  ]
+  ],
+  "root": true,
 }
