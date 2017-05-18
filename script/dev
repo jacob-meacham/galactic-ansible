@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+DIR=$( cd "$(dirname "$0")/.." && pwd )
+set -e
+
+function cmd {
+  command -v $1 > /dev/null
+}
+
+script/dev-setup
+
+docker-compose up
+
+if cmd yarn; then
+  if ! yarn check; then
+    yarn install
+  fi
+fi
+
