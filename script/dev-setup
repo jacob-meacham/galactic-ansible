@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+DIR=$( cd "$(dirname "$0")/.." && pwd )
+for P in $(dirname "$0")/dev-setup.d/*
+do
+  source $P
+done
+
+set -e
+
+function on-exit {
+  status=$?
+  if [ $status -ne 0 ]; then
+    echo
+    error "Setup wasn't successful"
+    error "Please check the logs above, follow any instructions and run $0 again"
+    exit $status
+  fi
+}
+trap "on-exit" EXIT
+
+info "Install dev dependencies"
+
+
+if ! cmd mongo; then
+  echo
+  echo 'FAIL: Please install mongodb'
+  exit 1
+fi
+
+if ! cmd docker; then
+  echo
+  error "Please install Docker:"
+  echo
+  echo "For OSX: https://www.docker.com/docker-mac"
+  echo "For other OS: https://www.docker.com/get-docker"
+  exit 1
+fi
+
+echo -e "${GREEN}>> You're all set up!${DEFAULT}"

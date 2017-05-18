@@ -1,0 +1,14 @@
+db:
+  image: mongo
+  command: "--smallfiles --logpath=/dev/null"
+web:
+  build: .
+  command: node index.js
+  volumes:
+    - .:/galactic-ansible
+  ports:
+    - "3000:3000"
+  links:
+    - db
+  environment:
+    PORT: 3000

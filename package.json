@@ -59,6 +59,7 @@
   "dependencies": {
     "CBuffer": "1.1.1",
     "commander": "2.9.0",
+    "mongodb": "2.2.26",
     "node-twitterbot": "0.2.2"
   }
 }
