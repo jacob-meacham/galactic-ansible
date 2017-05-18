@@ -27,13 +27,13 @@ if ! cmd mongo; then
   exit 1
 fi
 
-# if ! cmd docker; then
-#   echo
-#   error "Please install Docker:"
-#   echo
-#   echo "For OSX: https://www.docker.com/docker-mac"
-#   echo "For other OS: https://www.docker.com/get-docker"
-#   exit 1
-# fi
+if ! cmd docker; then
+  echo
+  error "Please install Docker:"
+  echo
+  echo "For OSX: https://www.docker.com/docker-mac"
+  echo "For other OS: https://www.docker.com/get-docker"
+  exit 1
+fi
 
 echo -e "${GREEN}>> You're all set up!${DEFAULT}"
